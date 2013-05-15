@@ -2,7 +2,7 @@
 # Cookbook Name:: gitlab
 # Recipe:: prerequisites
 #
-# Copyright (C) 2013 Darron Froese
+# Copyright (C) 2013 Sebastiaan van Parijs
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,43 +18,23 @@
 #
 
 package "build-essential"
-package "openssl"
-package "wget"
-package "curl"
-package "zlib1g-dev"
-package "libssl-dev"
-package "libffi-dev"
-package "libreadline6"
-package "libreadline6-dev"
-package "zlib1g"
 package "zlib1g-dev"
 package "libyaml-dev"
-package "libsqlite3-0"
-package "libsqlite3-dev"
-package "sqlite3"
-package "libxml2-dev"
-package "libxslt1-dev"
-package "autoconf"
-package "libc6-dev"
+package "libssl-dev"
+package "libgdbm-dev"
+package "libreadline-dev"
 package "libncurses5-dev"
-package "automake"
-package "libtool"
-package "bison"
-package "checkinstall"
-package "openssh-server"
+package "libffi-dev"
+package "curl"
 package "git-core"
+package "openssh-server"
+package "redis-server"
+package "checkinstall"
+package "libxml2-dev"
+package "libxslt-dev"
+package "libcurl4-openssl-dev"
 package "libicu-dev"
 package "python"
 package "python-software-properties"
 
 gem_package "bundler"
-
-firewall "ufw" do
-  action :enable
-end
-
-firewall_rule "ssh" do
-  port 22
-  action :allow
-  notifies :enable, "firewall[ufw]"
-end
