@@ -2,8 +2,10 @@
 
 group "git"
 
+# sudo adduser --disabled-login --gecos 'GitLab CI' gitlab_ci
+# how to disable-login?
 user "git" do
-  comment "Git Version Control"
+  comment "Git Version Control & GitLab User"
   gid "git"
   home "/home/git"
   shell "/bin/sh"
@@ -31,37 +33,25 @@ template "/home/git/.profile" do
   mode 0644
 end
 
-# "gitlab" group and user.
-
-group "gitlab"
-
-user "gitlab" do
-  comment "GitLab"
-  gid "gitlab"
-  home "/home/gitlab"
-  shell "/bin/sh"
-  supports :manage_home => true
-end
-
-["/home/gitlab/releases", "/home/gitlab/shared", "/home/gitlab/shared/config", "/home/gitlab/shared/system", "/home/gitlab/shared/log", "/home/gitlab/shared/pids"].each do |dir|
+["/home/git/public", "/home/git/public/uploads", "/home/git/gitlab-satellites", "/home/git/gitlab/config"].each do |dir|
   directory dir do
-    owner "gitlab"
-    group "gitlab"
+    owner "git"
+    group "git"
     mode 0775
     not_if { FileTest.exists?("#{dir}") }
   end
 end
 
-template "/home/gitlab/.pam_environment" do
+template "/home/git/.pam_environment" do
   source "pam_environment.erb"
-  owner "gitlab"
-  group "gitlab"
+  owner "git"
+  group "git"
   mode 0750
-  not_if { FileTest.exists?("/home/gitlab/.pam_environment") }
+  not_if { FileTest.exists?("/home/git/.pam_environment") }
 end
 
 group "git" do
-  members ['git', 'gitlab']
+  members ['git']
 end
 
 # nonfiction standard.
@@ -70,19 +60,19 @@ group "deploy" do
   append true
 end
 
-generate_ssh_keys "gitlab"
+generate_ssh_keys "git"
 
-template "/home/gitlab/.ssh/config" do
+template "/home/git/.ssh/config" do
   source "ssh_config.erb"
-  owner "gitlab"
-  group "gitlab"
+  owner "git"
+  group "git"
   mode 0644
 end
 
-template "/home/gitlab/.ssh/authorized_keys" do
+template "/home/git/.ssh/authorized_keys" do
   source "gitlab_authorized_keys.erb"
-  owner "gitlab"
-  group "gitlab"
+  owner "git"
+  group "git"
   mode 0600
 end
 
@@ -91,21 +81,21 @@ bash "copy public key" do
   group "root"
   cwd "/home/git"
   code <<-EOH
-    cp /home/gitlab/.ssh/id_dsa.pub /home/git/gitlab.pub
+    cp /home/git/.ssh/id_dsa.pub /home/git/gitlab.pub
     chmod 0444 gitlab.pub
   EOH
   not_if { FileTest.exists?("/home/git/gitlab.pub") }
 end
 
-template "/home/gitlab/.gitconfig" do
+template "/home/git/.gitconfig" do
   source "gitlab_git_config.erb"
-  owner "gitlab"
-  group "gitlab"
+  owner "git"
+  group "git"
   mode 0644
 end
 
-sudo 'gitlab' do
-  user "gitlab"
+sudo 'git' do
+  user "git"
   runas 'root'
   commands ['/usr/sbin/service gitlab restart', '/usr/sbin/service nginx restart', '/usr/sbin/service gitlab start', '/usr/sbin/service nginx start', '/usr/sbin/service gitlab stop', '/usr/sbin/service nginx stop']
   nopasswd true

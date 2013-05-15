@@ -1,25 +1,28 @@
 # gitlab cookbook
 
-This [Chef](http://www.opscode.com/chef/) cookbook and [Capistrano](https://github.com/capistrano/capistrano) recipe is created to:
+This [Chef](http://www.opscode.com/chef/) cookbook recipe is created to:
 
-1. Setup an Ubuntu 12.0.4 server to be ready for [GitlabHQ](https://github.com/gitlabhq/gitlabhq)
-2. Push the [4.0-stable branch](https://github.com/gitlabhq/gitlabhq/tree/4-0-stable) of Gitlab
+1. Setup an Debian 7.0 server to be ready for [GitlabHQ](https://github.com/gitlabhq/gitlabhq)
+2. Push the [5.1-stable branch](https://github.com/gitlabhq/gitlabhq/tree/5-1-stable) of Gitlab
 
 I've separated it into two components because:
 
-1. I wanted to better understand the [setup process](https://github.com/gitlabhq/gitlab-recipes/tree/master/install/v4) from start to finish and build an idempotent Chef cookbook.
-2. I like the ability to push new releases using Capistrano.
+1. I wanted to better understand the [setup process](https://github.com/gitlabhq/gitlab-recipes/tree/master/install/master) from start to finish and build an idempotent Chef cookbook.
+2. I like the ability to customize the configuration.
+
+We've made a fork from Darron Froese's cookbook to be able to use if for Debian 7.0 and use Gitlab 5.1-stable.
 
 # Requirements
 
-Tested on Ubuntu 12.0.4 using:
+Tested on Debian 7.0 using:
 
-1. [Vagrant](http://www.vagrantup.com)
+1. [Vagrant](http://www.vagrantup.com) *(todo)
 2. [Rackspace Cloud](http://www.rackspace.com/cloud/)
+3. VPS
 
-You need to have Ruby 1.9.3-p327, Bundler and Chef already installed - [I have included my Ubuntu 12.0.4LTS bootstrap](https://github.com/darron/cookbook-gitlab/blob/master/config/bootstrap.rb).
+You need to have Ruby 1.9.3-p327, Bundler and Chef already installed.
 
-There's a Vagrant test vm available [here](https://dl.dropbox.com/u/695019/vagrant/precise-193p327.box).
+There's a Vagrant test vm available [here](https://dl.dropbox.com/u/695019/vagrant/precise-193p327.box).*(todo)
 
 # Usage
 
@@ -37,5 +40,9 @@ There's a Vagrant test vm available [here](https://dl.dropbox.com/u/695019/vagra
 # Recipes
 
 # Author
+
+Author:: Sebastiaan van Parijs (<svparijs@refactory.it>)
+
+# Special thanks to:
 
 Author:: Darron Froese (<darron@froese.org>)
