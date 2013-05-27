@@ -34,6 +34,11 @@ package "libxslt-dev"
 package "libcurl4-openssl-dev"
 package "libicu-dev"
 package "python"
+
+link "/usr/bin/python" do
+  to "/usr/bin/python2"
+end
+
 package "python-software-properties"
 
 gem_package "bundler"
