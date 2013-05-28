@@ -33,7 +33,7 @@ template "/home/git/.profile" do
   mode 0644
 end
 
-["/home/git/public", "/home/git/public/uploads", "/home/git/gitlab-satellites", "/home/git/gitlab/config"].each do |dir|
+["/home/git/public", "/home/git/public/uploads", "/home/git/gitlab-satellites", "/home/git/gitlab", "/home/git/gitlab/config"].each do |dir|
   directory dir do
     owner "git"
     group "git"
@@ -77,8 +77,8 @@ template "/home/git/.ssh/authorized_keys" do
 end
 
 bash "copy public key" do
-  user "root"
-  group "root"
+  user "git"
+  group "git"
   cwd "/home/git"
   code <<-EOH
     cp /home/git/.ssh/id_dsa.pub /home/git/gitlab.pub

@@ -15,9 +15,9 @@ production: &base
   ## GitLab settings
   gitlab:
     ## Web server settings
-    host: <%= node.name %>
-    port: 80
-    https: false
+    host: <%= node['gitlab']['host'] %>
+    port: <%= node['gitlab']['port'] %>
+    https: <%= node['gitlab']['ssl'] %>
     # Uncomment and customize to run in non-root path
     # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
     # relative_url_root: /gitlab
@@ -27,13 +27,13 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: <%= node['gitlab']['email'] %>
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: <%= node['gitlab']['email'] %>
 
     ## Project settings
-    default_projects_limit: 10
+    default_projects_limit: <%= node['gitlab']['default_project_limit'] %>
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
     # username_changing_enabled: false # default: true - User can change her username/namespace
 

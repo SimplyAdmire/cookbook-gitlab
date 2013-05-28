@@ -9,7 +9,7 @@ upstream gitlab {
 
 server {
   listen 80 default_server;         # e.g., listen 192.168.1.1:80;
-  server_name <%= node.name %>;     # e.g., server_name source.example.com;
+  server_name <%= node['gitlab']['host'] %>;     # e.g., server_name source.example.com;
   root /home/git/gitlab/public;
 
   # individual nginx logs for this gitlab vhost
