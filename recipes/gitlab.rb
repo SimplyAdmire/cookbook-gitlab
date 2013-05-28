@@ -1,7 +1,4 @@
-# TODO: Cloning is not working properly
 # http://docs.opscode.com/resource_deploy.html#DeployResource-SCMResources
-# or
-# http://docs.opscode.com/resource_git.html
 deploy "/home/git/gitlab" do
   repo "https://github.com/gitlabhq/gitlabhq.git"
   revision "5-2-stable"
@@ -9,19 +6,20 @@ deploy "/home/git/gitlab" do
   group "git"
 end
 
-#git "/home/git/gitlab" do
-#    repository "https://github.com/gitlabhq/gitlabhq.git"
-#    revision "5-2-stable"
-#    action :sync
-#    user "git"
-#    group "git"
-#end
-
-["/home/git/gitlab/config", "/home/git/gitlab/tmp", "/home/git/gitlab/tmp/socket"].each do |dir|
+["/home/git/gitlab/config", "/home/git/gitlab/shared", "/home/git/gitlab/tmp", "/home/git/gitlab/tmp/socket"].each do |dir|
   directory dir do
     owner "git"
     group "git"
     mode 0775
+    not_if { FileTest.exists?("#{dir}") }
+  end
+end
+
+["/home/git/gitlab/shared/log"].each do |dir|
+  directory dir do
+    owner "git"
+    group "git"
+    mode 0666
     not_if { FileTest.exists?("#{dir}") }
   end
 end
@@ -36,14 +34,14 @@ template "/etc/init.d/gitlab" do
 end
 
 # Install the configs.
-cookbook_file "/home/git/gitlab/config/database.yml" do
-  source "database.yml"
+template "/home/git/gitlab/current/config/database.yml" do
+  source "database.yml.erb"
   owner "git"
   group "git"
   mode 0644
 end
 
-template "/home/git/gitlab/config/gitlab.yml" do
+template "/home/git/gitlab/current/config/gitlab.yml" do
   source "gitlab.yml.erb"
   owner "git"
   group "git"
@@ -63,7 +61,9 @@ end
 #
 package "ruby1.9.1-dev"
 
-gem_package "rake"
+gem_package "rake"  do
+  options("--version '10.0.4'")
+end
 
 gem_package "charlock_holmes" do
   options("--version '0.6.9.4'")
@@ -74,7 +74,7 @@ end
 script "bundler install" do
   interpreter "bash"
   user "git"
-  cwd "/home/git/gitlab"
+  cwd "/home/git/gitlab/current"
   code <<-EOH
    bundle install --deployment --without development test postgres
   EOH
@@ -91,7 +91,7 @@ end
 script "bundle exec setup" do
   interpreter "bash"
   user "git"
-  cwd "/home/git/gitlab"
+  cwd "/home/git/gitlab/current"
   code <<-EOH
 	bundle exec rake gitlab:setup RAILS_ENV=production
   EOH

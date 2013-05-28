@@ -1,23 +1,21 @@
-package "makepasswd"
+# define mysql connection parameters
+mysql_connection_info = {
+  :host     => "localhost",
+  :username => "root",
+  :password => node['mysql']['server_root_password']
+}
 
-bash "setup mysql password" do
-   user "root"
-   cwd "/root"
-   code <<-EOH
-     userPassword=$(makepasswd --char=10) # Generate a random MySQL password
-     echo mysql-server mysql-server/root_password password $userPassword | sudo debconf-set-selections
-     echo mysql-server mysql-server/root_password_again password $userPassword | sudo debconf-set-selections
-     echo $userPassword
-   EOH
-   not_if { FileTest.exists?("/usr/sbin/mysqld") }
+# create the database
+mysql_database node['gitlab']['db']['database'] do
+  connection mysql_connection_info
+  action :create
 end
 
-package "mysql-server"
-package "mysql-client"
-package "libmysqlclient-dev"
-
-# create a mysql database
-#mysql_database 'gitlabhq_production' do
-#  connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
-#  action :create
-#end
+# create database user
+mysql_database_user node['gitlab']['db']['user'] do
+  connection mysql_connection_info
+  password node['gitlab']['db']['password']
+  database_name node['gitlab']['db']['database']
+  privileges [:select,:update,:insert,:create,:alter,:drop,:delete]
+  action :grant
+end

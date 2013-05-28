@@ -5,10 +5,10 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: gitlabhq_production
+  database: <%= node['gitlab']['db']['database'] %>
   pool: 5
-  username: <%= ENV['PROD_DB_USER'] %>
-  password: <%= ENV['PROD_DB_PASSWORD'] %>
+  username: <%= node['gitlab']['db']['user'] %>
+  password: '<%= node['gitlab']['db']['password'] %>'
   # host: localhost
   # socket: /tmp/mysql.sock
 

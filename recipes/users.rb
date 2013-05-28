@@ -42,14 +42,6 @@ end
   end
 end
 
-template "/home/git/.pam_environment" do
-  source "pam_environment.erb"
-  owner "git"
-  group "git"
-  mode 0750
-  not_if { FileTest.exists?("/home/git/.pam_environment") }
-end
-
 group "git" do
   members ['git']
 end
